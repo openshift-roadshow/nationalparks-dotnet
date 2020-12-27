@@ -1,7 +1,13 @@
 using NationalParks.Models;
 using MongoDB.Driver;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+
 using System.Collections.Generic;
 using System.Linq;
+
+using System;
+using System.IO;
 
 namespace NationalParks.Services
 {
@@ -27,6 +33,24 @@ namespace NationalParks.Services
         {
             _parks.InsertOne(Park);
             return Park;
+        }
+
+        public string Load()
+        {
+            string line;
+            int i = 0;
+            using (TextReader file = File.OpenText(@"nationalparks.json"))
+            {
+                while ((line = file.ReadLine()) != null)
+                {
+                    var bsonDocument = BsonDocument.Parse(line);
+                    var myObj = BsonSerializer.Deserialize<Park>(bsonDocument);
+                    _parks.InsertOneAsync(myObj);
+                    i++;
+                }
+            }
+            return "Items inserted in database: " + i;
+
         }
 
         public void Update(string id, Park ParkIn) =>

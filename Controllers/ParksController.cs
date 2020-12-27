@@ -2,12 +2,15 @@ using NationalParks.Models;
 using NationalParks.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Text.Json;
+using System;
+
 
 namespace NationalParks.Controllers
 {
-    [Route("api/[controller]")]
+    //[Route("ws/data/[controller]")]
     [ApiController]
-    public class ParksController : ControllerBase
+    public class ParksController : Controller
     {
         private readonly ParkService _ParkService;
 
@@ -16,10 +19,46 @@ namespace NationalParks.Controllers
             _ParkService = ParkService;
         }
 
+        [Route("ws/data/all")]
+        [Produces("application/json")]
         [HttpGet]
-        public ActionResult<List<Park>> Get() =>
-            _ParkService.Get();
+        public ActionResult<List<Park>> Get()
+        {
+            return _ParkService.Get();
+        }
 
+        [Route("ws/data/info/")]
+        [Produces("application/json")]
+        [HttpGet]
+        public ActionResult Info()
+        {
+            var jsonData = new
+            {
+                id = "nationalparks",
+                displayName = "National Parks",
+                center = new
+                        {
+                            latitude = 47.039304,
+                            longitude = 14.505178
+                        },
+                zoom = 4
+            };
+            //string json = JsonSerializer.Serialize(jsonData);
+            //Console.WriteLine(json);
+            return Json(jsonData);
+
+
+        }
+
+        [Route("ws/data/load")]
+        [HttpGet]
+        public ActionResult<string> Load()
+        {
+            return _ParkService.Load();
+        }
+
+
+        /*
         [HttpGet("{id:length(24)}", Name = "GetPark")]
         public ActionResult<Park> Get(string id)
         {
@@ -32,7 +71,8 @@ namespace NationalParks.Controllers
 
             return Park;
         }
-
+        
+        
         [HttpPost]
         public ActionResult<Park> Create(Park Park)
         {
@@ -70,5 +110,6 @@ namespace NationalParks.Controllers
 
             return NoContent();
         }
+        */
     }
 }
