@@ -39,8 +39,8 @@ namespace NationalParks.Models
             CountryName = countryName;
             Name = name;
             ToponymName = toponymName;
-            Longitude = coordinates[0];
-            Latitude = coordinates[1];
+            Longitude = coordinates[1];
+            Latitude = coordinates[0];
             Coordinates = coordinates;
         }
 
