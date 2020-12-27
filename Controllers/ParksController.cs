@@ -19,6 +19,13 @@ namespace NationalParks.Controllers
             _ParkService = ParkService;
         }
 
+        [Route("/")]
+        [HttpGet]
+        public ActionResult<string> Welcome()
+        {
+            return "Welcome to the National Parks data service.";
+        }
+
         [Route("ws/data/all")]
         [Produces("application/json")]
         [HttpGet]
@@ -27,7 +34,7 @@ namespace NationalParks.Controllers
             return _ParkService.Get();
         }
 
-        [Route("ws/data/info/")]
+        [Route("ws/info/")]
         [Produces("application/json")]
         [HttpGet]
         public ActionResult Info()
@@ -43,8 +50,7 @@ namespace NationalParks.Controllers
                         },
                 zoom = 4
             };
-            //string json = JsonSerializer.Serialize(jsonData);
-            //Console.WriteLine(json);
+
             return Json(jsonData);
 
 
@@ -57,59 +63,22 @@ namespace NationalParks.Controllers
             return _ParkService.Load();
         }
 
-
-        /*
-        [HttpGet("{id:length(24)}", Name = "GetPark")]
-        public ActionResult<Park> Get(string id)
+        [Route("ws/healthz/")]
+        [HttpGet]
+        public ActionResult<string> Health()
         {
-            var Park = _ParkService.Get(id);
-
-            if (Park == null)
-            {
-                return NotFound();
-            }
-
-            return Park;
-        }
-        
-        
-        [HttpPost]
-        public ActionResult<Park> Create(Park Park)
-        {
-            _ParkService.Create(Park);
-
-            return CreatedAtRoute("GetPark", new { id = Park.Id.ToString() }, Park);
+            return "OK";
         }
 
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Park ParkIn)
+
+        [Route("ws/data/within/")]
+        [Produces("application/json")]
+        [HttpGet]
+        public IActionResult Within()
         {
-            var Park = _ParkService.Get(id);
-
-            if (Park == null)
-            {
-                return NotFound();
-            }
-
-            _ParkService.Update(id, ParkIn);
-
+            Console.WriteLine("Not implemented");
             return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
-        {
-            var Park = _ParkService.Get(id);
-
-            if (Park == null)
-            {
-                return NotFound();
-            }
-
-            _ParkService.Remove(Park.Id);
-
-            return NoContent();
-        }
-        */
     }
 }
