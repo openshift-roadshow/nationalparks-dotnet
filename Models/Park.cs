@@ -1,12 +1,15 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-//using MongoDB.Entities;
 using System.Collections.Generic;
 
 namespace NationalParks.Models
 {
     public class Park
     {
+
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         [BsonElement("countryCode")]
         public string CountryCode { get; set; }
@@ -26,10 +29,6 @@ namespace NationalParks.Models
         public double Longitude { get; set; }
 
         public double Latitude { get; set; }
-
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-
 
         [BsonConstructor]
         public Park(string id, string countryCode, string countryName, string name, string toponymName, List<double> coordinates )
