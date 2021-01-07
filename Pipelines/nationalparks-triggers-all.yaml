@@ -42,7 +42,7 @@ spec:
         pipelineRef:
           name: nationalparks
         workspaces:
-        - name: app-source
+        - name: workspace
           persistentVolumeClaim:
             claimName: app-source-pvc
 ---
