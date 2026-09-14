@@ -37,20 +37,36 @@ namespace NationalParks.Services
 
         public string Load()
         {
+            // Loading twice should not duplicate the dataset.
+            _parks.DeleteMany(Builders<Park>.Filter.Empty);
+
             string line;
-            int i = 0;
+            int inserted = 0;
+            var batch = new List<Park>();
+
             using (TextReader file = File.OpenText(@"nationalparks.json"))
             {
                 while ((line = file.ReadLine()) != null)
                 {
                     var bsonDocument = BsonDocument.Parse(line);
-                    var myObj = BsonSerializer.Deserialize<Park>(bsonDocument);
-                    _parks.InsertOneAsync(myObj);
-                    i++;
+                    batch.Add(BsonSerializer.Deserialize<Park>(bsonDocument));
+
+                    if (batch.Count >= 1000)
+                    {
+                        _parks.InsertMany(batch);
+                        inserted += batch.Count;
+                        batch.Clear();
+                    }
                 }
             }
-            return "Items inserted in database: " + i;
 
+            if (batch.Count > 0)
+            {
+                _parks.InsertMany(batch);
+                inserted += batch.Count;
+            }
+
+            return "Items inserted in database: " + inserted;
         }
 
         public void Update(string id, Park ParkIn) =>
